@@ -16,7 +16,11 @@ declare -A RPM_PACKAGES=(
     neovim \
     nmap \
     thefuck \
-    fish"
+    fish \
+    rawtherapee \
+    spotify-client \
+    deja-dup \
+    Signal-Desktop"
 
   ["terra"]="\
     starship"
