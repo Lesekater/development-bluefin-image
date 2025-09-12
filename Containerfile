@@ -1,5 +1,5 @@
 # Allow build scripts to be referenced without being copied into the final image
-FROM ghcr.io/ublue-os/bluefin:stable AS ctx
+FROM ghcr.io/ublue-os/bluefin-dx-nvidia:stable AS ctx
 COPY build_files /
 
 # Base Image
