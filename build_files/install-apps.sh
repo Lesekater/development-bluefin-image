@@ -62,22 +62,23 @@ for repo in "${!RPM_PACKAGES[@]}"; do
   fi
 done
 
-# install other apps
-# curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
 
-# log "Enabling system services"
-# systemctl enable docker.socket libvirtd.service
+# Install Flatpaks
+log "Installing Flatpaks"
+if [[ -f /repo_files/flatpaks ]]; then
+  while read -r flatpak_id; do
+    [[ -z "$flatpak_id" ]] && continue
+    flatpak install -y flathub "$flatpak_id"
+  done < /repo_files/flatpaks
+fi
 
-# log "Adding just recipes"
-# echo "import \"/usr/share/elias/just/reeding.just\"" >>/usr/share/ublue-os/justfile
-
-# log "Hide incompatible Bazzite just recipes"
-# for recipe in "install-coolercontrol" "install-openrgb"; do
-#   if ! grep -l "^$recipe:" /usr/share/ublue-os/just/*.just | grep -q .; then
-#     echo "Error: Recipe $recipe not found in any just file"
-#     exit 1
-#   fi
-#   sed -i "s/^$recipe:/_$recipe:/" /usr/share/ublue-os/just/*.just
-# done
+# Install Homebrews
+log "Installing Homebrew packages"
+if [[ -f /repo_files/brews ]]; then
+  while read -r brew_pkg; do
+    [[ -z "$brew_pkg" ]] && continue
+    brew install "$brew_pkg"
+  done < /repo_files/brews
+fi
 
 log "Build process completed"
