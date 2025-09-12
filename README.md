@@ -1,3 +1,12 @@
+# Elias development os
+
+Opinioated custom bootc image for development and daily use, with inspirations from https://github.com/astrovm/amyos. Based on bluefin.
+
+\
+\
+\
+
+------------------------------------
 # image-template
 
 This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
