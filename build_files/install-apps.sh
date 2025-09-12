@@ -15,7 +15,6 @@ declare -A RPM_PACKAGES=(
     gparted \
     neovim \
     nmap \
-    openrgb \
     thefuck \
     fish"
 
@@ -58,6 +57,9 @@ for repo in "${!RPM_PACKAGES[@]}"; do
     "${cmd[@]}"
   fi
 done
+
+# install other apps
+# curl -L -o devpod "https://github.com/loft-sh/devpod/releases/latest/download/devpod-linux-amd64" && sudo install -c -m 0755 devpod /usr/local/bin && rm -f devpod
 
 # log "Enabling system services"
 # systemctl enable docker.socket libvirtd.service
