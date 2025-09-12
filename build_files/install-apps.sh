@@ -35,13 +35,6 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-kde \
     vlc-plugin-pause-click \
     vlc"
-
-  ["docker-ce"]="\
-    containerd.io \
-    docker-buildx-plugin \
-    docker-ce \
-    docker-ce-cli \
-    docker-compose-plugin"
 )
 
 log "Starting build process"
