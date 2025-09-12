@@ -42,9 +42,6 @@ declare -A RPM_PACKAGES=(
     docker-ce \
     docker-ce-cli \
     docker-compose-plugin"
-
-  ["brave-browser"]="brave-browser"
-  ["vscode"]="code"
 )
 
 log "Starting build process"
