@@ -65,12 +65,12 @@ done
 # flatpak packages list
 declare -A FLATPAK_PACKAGES=(
   ["flathub"]="\
-    com.usebottles.bottles
-    org.blender.Blender
-    org.gimp.GIMP
-    org.libreoffice.LibreOffice
-    org.signal.Signal
-    org.telegram.desktop
+    com.usebottles.bottles \
+    org.blender.Blender \
+    org.gimp.GIMP \
+    org.libreoffice.LibreOffice \
+    org.signal.Signal \
+    org.telegram.desktop \
     com.discordapp.Discord"
 )
 
@@ -88,5 +88,6 @@ for repo in "${!FLATPAK_PACKAGES[@]}"; do
       log "$flatpak_id is already installed, skipping."
     fi
   done
+done
 
 log "Build process completed"
