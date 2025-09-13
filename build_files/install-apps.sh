@@ -62,22 +62,13 @@ for repo in "${!RPM_PACKAGES[@]}"; do
   fi
 done
 
-# # Install Flatpaks
-# log "Installing Flatpaks"
-# if [[ -f /repo_files/flatpaks ]]; then
-#   while read -r flatpak_id; do
-#     [[ -z "$flatpak_id" ]] && continue
-#     flatpak install -y flathub "$flatpak_id"
-#   done < /repo_files/flatpaks
-# fi
-
-# # Install Homebrews
-# log "Installing Homebrew packages"
-# if [[ -f /repo_files/brews ]]; then
-#   while read -r brew_pkg; do
-#     [[ -z "$brew_pkg" ]] && continue
-#     brew install "$brew_pkg"
-#   done < /repo_files/brews
-# fi
+# Install Flatpaks
+log "Installing Flatpaks"
+if [[ -f /repo_files/flatpaks ]]; then
+  while read -r flatpak_id; do
+    [[ -z "$flatpak_id" ]] && continue
+    flatpak install -y flathub "$flatpak_id"
+  done < /repo_files/flatpaks
+fi
 
 log "Build process completed"
