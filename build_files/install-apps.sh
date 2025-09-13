@@ -83,7 +83,7 @@ for repo in "${!FLATPAK_PACKAGES[@]}"; do
       flatpak remote-add --if-not-exists "$repo" "https://flathub.org/repo/$repo.flatpakrepo"
     fi
     if ! flatpak list --app | grep -q "^$flatpak_id\s"; then
-      flatpak install -y "$repo" "$flatpak_id"
+      flatpak install -y --noninteractive --system "$repo" "$flatpak_id"
     else
       log "$flatpak_id is already installed, skipping."
     fi
