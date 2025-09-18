@@ -34,6 +34,9 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-kde \
     vlc-plugin-pause-click \
     vlc"
+
+  ["tulilirockz/fw-fanctrl"]="\
+    fw-fanctrl"
 )
 
 log "Starting build process"
