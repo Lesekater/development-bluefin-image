@@ -35,7 +35,7 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-pause-click \
     vlc"
 
-  ["tulilirockz/fw-fanctrl"]="\
+  ["copr:tulilirockz/fw-fanctrl"]="\
     fw-fanctrl"
 )
 
