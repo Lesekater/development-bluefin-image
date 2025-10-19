@@ -159,6 +159,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Tag bluefin variant as main image (without suffix) before pushing
+      - name: Tag Bluefin as Main Image
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && matrix.variant.name == 'bluefin'
+        run: |
+          # Tag the bluefin image as the main image (without suffix)
+          for tag in ${{ steps.metadata.outputs.tags }}; do
+            podman tag ${{ env.IMAGE_NAME }}:$tag ${{ github.event.repository.name }}:$tag
+          done
+
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
@@ -173,22 +182,19 @@ jobs:
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
 
-      # Copy bluefin variant as main image (without suffix) using skopeo
-      - name: Copy Bluefin as Main Image
+      # Push main image (for bluefin variant only)
+      - name: Push Main Image
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && matrix.variant.name == 'bluefin'
         env:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ github.token }}
-        run: |
-          # Login to registry for skopeo
-          echo "$REGISTRY_PASSWORD" | skopeo login --username "$REGISTRY_USER" --password-stdin ${{ env.IMAGE_REGISTRY }}
-          
-          # Copy the bluefin image to main image (without suffix) using skopeo
-          for tag in ${{ steps.metadata.outputs.tags }}; do
-            skopeo copy \
-              docker://${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:$tag \
-              docker://${{ env.IMAGE_REGISTRY }}/${{ github.event.repository.name }}:$tag
-          done
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          image: ${{ github.event.repository.name }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
 
       # This section is optional and only needs to be enabled if you plan on distributing
       # your project for others to consume. You will need to create a public and private key
