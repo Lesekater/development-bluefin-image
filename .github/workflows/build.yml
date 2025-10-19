@@ -173,6 +173,20 @@ jobs:
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
 
+      # Tag and push bluefin variant as main image (without suffix)
+      - name: Tag and Push Bluefin as Main Image
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && matrix.variant.name == 'bluefin'
+        run: |
+          # Tag the bluefin image as the main image (without suffix)
+          for tag in ${{ steps.metadata.outputs.tags }}; do
+            podman tag ${{ env.IMAGE_NAME }}:$tag ${{ github.event.repository.name }}:$tag
+          done
+          
+          # Push the main image tags
+          for tag in ${{ steps.metadata.outputs.tags }}; do
+            podman push ${{ env.IMAGE_REGISTRY }}/${{ github.event.repository.name }}:$tag
+          done
+
       # This section is optional and only needs to be enabled if you plan on distributing
       # your project for others to consume. You will need to create a public and private key
       # using Cosign and save the private key as a repository secret in Github for this workflow

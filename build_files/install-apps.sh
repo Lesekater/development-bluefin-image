@@ -40,7 +40,7 @@ declare -A RPM_PACKAGES=(
 # Add development packages only for Bluefin variants
 if [[ $VARIANT_TYPE == "bluefin"* ]]; then
   RPM_PACKAGES["fedora"]="${RPM_PACKAGES["fedora"]} android-tools"
-  log "Added development packages for Bluefin variant"
+  log "Added development packages for $VARIANT_TYPE variant"
 else
   log "Skipped development packages for $VARIANT_TYPE variant"
 fi
