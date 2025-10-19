@@ -4,7 +4,7 @@ Opinionated custom bootc image for development and daily use, with inspirations 
 
 - **Main image** (default): Based on Bluefin DX with NVIDIA support - ideal for development workstations with NVIDIA GPUs
 - **Bluefin Laptop variant**: Based on Bluefin DX - ideal for laptops and systems without dedicated GPUs  
-- **Bazzite variant**: Based on Bazzite gaming image - ideal for gaming and entertainment systems
+- **Bazzite variant**: Based on Bazzite gaming image with NVIDIA support - ideal for gaming and entertainment systems with NVIDIA GPUs
 
 All variants are built from the same Containerfile using build arguments to specify different base images. The main image is automatically published both as `-bluefin` and without any suffix for convenience.
 
@@ -98,7 +98,7 @@ This template uses a single Containerfile with build arguments to create three i
 
 1. **Bluefin variant** (with NVIDIA): Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx-nvidia:stable`
 2. **Bluefin Laptop variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:stable`
-3. **Bazzite variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bazzite:latest`
+3. **Bazzite variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bazzite-nvidia:latest`
 
 All variants will be built simultaneously and published as separate images:
 - `ghcr.io/<username>/<repo-name>` (main image - same as bluefin variant)
@@ -112,6 +112,7 @@ To modify the base images or add additional variants, edit the matrix configurat
     <summary>Base Images</summary>
 
     - Bazzite: `ghcr.io/ublue-os/bazzite:stable`
+    - Bazzite (NVIDIA): `ghcr.io/ublue-os/bazzite-nvidia:stable`
     - Aurora: `ghcr.io/ublue-os/aurora:stable`
     - Bluefin: `ghcr.io/ublue-os/bluefin:stable`
     - Universal Blue Base: `ghcr.io/ublue-os/base-main:latest`
@@ -157,7 +158,7 @@ For the Bluefin Laptop variant (no dedicated GPU):
 sudo bootc switch ghcr.io/<username>/<image_name>-bluefin-laptop
 ```
 
-For the Bazzite variant (gaming-focused):
+For the Bazzite variant (gaming-focused with NVIDIA support):
 ```bash
 sudo bootc switch ghcr.io/<username>/<image_name>-bazzite
 ```
@@ -172,7 +173,7 @@ The [Containerfile](./Containerfile) defines the operations used to customize th
 
 - **Default**: `ghcr.io/ublue-os/bluefin-dx:stable` (Bluefin Laptop variant)
 - **Bluefin**: `ghcr.io/ublue-os/bluefin-dx-nvidia:stable` (with NVIDIA support)
-- **Bazzite**: `ghcr.io/ublue-os/bazzite:latest` (gaming-optimized)
+- **Bazzite**: `ghcr.io/ublue-os/bazzite-nvidia:latest` (gaming-optimized with NVIDIA)
 
 The file works exactly like a regular podman Containerfile. For reference, please see the [Podman Documentation](https://docs.podman.io/en/latest/Introduction.html).
 
@@ -237,7 +238,7 @@ just build my-image-bluefin-laptop latest "ghcr.io/ublue-os/bluefin-dx:stable" "
 
 Build the Bazzite variant:
 ```bash
-just build my-image-bazzite latest "ghcr.io/ublue-os/bazzite:latest" "bazzite"
+just build my-image-bazzite latest "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
 ```
 
 Build the main image (same as bluefin, also tagged without suffix):

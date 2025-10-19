@@ -9,7 +9,7 @@ This repository builds three variants of the custom Universal Blue image, each o
 | **Main Image** (default) | `bluefin-dx-nvidia:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>` |
 | **Bluefin** | `bluefin-dx-nvidia:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>-bluefin` |
 | **Bluefin Laptop** | `bluefin-dx:stable` | Integrated Graphics | Laptops, battery life | `<repo>-bluefin-laptop` |
-| **Bazzite** | `bazzite:latest` | AMD/Intel/NVIDIA | Gaming, entertainment | `<repo>-bazzite` |
+| **Bazzite** | `bazzite-nvidia:latest` | NVIDIA GPUs | Gaming, entertainment | `<repo>-bazzite` |
 
 > **Note:** The Main Image and Bluefin variant are identical - the Main Image is automatically published without suffix for convenience.
 
@@ -51,14 +51,14 @@ This variant is built and published separately but contains the exact same conte
 
 ## Bazzite Variant
 
-**Base Image:** `ghcr.io/ublue-os/bazzite:latest`  
-**Target Audience:** Gamers and entertainment enthusiasts  
+**Base Image:** `ghcr.io/ublue-os/bazzite-nvidia:latest`  
+**Target Audience:** Gamers and entertainment enthusiasts with NVIDIA GPUs  
 **Published as:** `ghcr.io/<username>/<repo-name>-bazzite`
 
 ### Features
 - **Gaming Optimized**: Pre-configured for gaming with performance tweaks
 - **Steam Deck Compatible**: Supports Steam Deck hardware and gaming modes
-- **Multiple GPU Support**: AMD, Intel, and NVIDIA graphics support
+- **NVIDIA GPU Support**: Full NVIDIA driver support for gaming performance
 - **Gaming Software**: Steam, Lutris, and gaming tools pre-installed
 - **Media Center**: Optimized for entertainment and media consumption
 

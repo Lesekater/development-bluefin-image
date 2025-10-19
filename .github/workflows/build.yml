@@ -36,8 +36,8 @@ jobs:
             base_image: "ghcr.io/ublue-os/bluefin-dx:stable"
             image_desc: "Developer-focused Universal Blue image for laptops"
           - name: "bazzite"
-            base_image: "ghcr.io/ublue-os/bazzite:latest"
-            image_desc: "Gaming-optimized Universal Blue image"
+            base_image: "ghcr.io/ublue-os/bazzite-nvidia:latest"
+            image_desc: "Gaming-optimized Universal Blue image with NVIDIA support"
 
     permissions:
       contents: read
