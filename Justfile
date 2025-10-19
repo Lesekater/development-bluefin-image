@@ -6,6 +6,18 @@ alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
 alias run-vm := run-vm-qcow2
 
+# Build all variants (bluefin-laptop, bluefin, and bazzite)
+build-all tag=default_tag:
+    just build "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:stable"
+    just build "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:stable"
+    just build "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite:latest"
+
+# Build all variants with SELinux-compatible settings
+build-all-local tag=default_tag:
+    just build-local "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:stable"
+    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:stable"
+    just build-local "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite:latest"
+
 [private]
 default:
     @just --list
@@ -86,17 +98,38 @@ sudoif command *args:
 #
 
 # Build the image using the specified parameters
-build $target_image=image_name $tag=default_tag:
+build $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:stable":
     #!/usr/bin/env bash
 
     BUILD_ARGS=()
     if [[ -z "$(git status -s)" ]]; then
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
     fi
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE={{ base_image }}")
 
     podman build \
         "${BUILD_ARGS[@]}" \
         --pull=newer \
+        --security-opt label=disable \
+        --tag "${target_image}:${tag}" \
+        .
+
+# Build with SELinux-compatible settings for local development
+build-local $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:stable":
+    #!/usr/bin/env bash
+
+    BUILD_ARGS=()
+    if [[ -z "$(git status -s)" ]]; then
+        BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
+    fi
+    BUILD_ARGS+=("--build-arg" "BASE_IMAGE={{ base_image }}")
+
+    echo "Building with SELinux-compatible settings..."
+    podman build \
+        "${BUILD_ARGS[@]}" \
+        --pull=newer \
+        --security-opt label=disable \
+        --security-opt seccomp=unconfined \
         --tag "${target_image}:${tag}" \
         .
 
