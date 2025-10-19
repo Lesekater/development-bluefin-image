@@ -17,7 +17,6 @@ declare -A RPM_PACKAGES=(
     nmap \
     thefuck \
     fish \
-    spotify-client \
     deja-dup \
     blender.x86_64 \
     bottles.noarch \
@@ -33,7 +32,8 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-ffmpeg \
     vlc-plugin-kde \
     vlc-plugin-pause-click \
-    vlc"
+    vlc \
+    spotify-client"
 )
 
 log "Starting build process"
