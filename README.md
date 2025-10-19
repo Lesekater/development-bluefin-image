@@ -1,6 +1,12 @@
 # Elias development os
 
-Opinioated custom bootc image for development and daily use, with inspirations from https://github.com/astrovm/amyos. Based on bluefin.
+Opinionated custom bootc image for development and daily use, with inspirations from https://github.com/astrovm/amyos. Available in three variants:
+
+- **Main image** (default): Based on Bluefin DX with NVIDIA support - ideal for development workstations with NVIDIA GPUs
+- **Bluefin Laptop variant**: Based on Bluefin DX - ideal for laptops and systems without dedicated GPUs  
+- **Bazzite variant**: Based on Bazzite gaming image - ideal for gaming and entertainment systems
+
+All variants are built from the same Containerfile using build arguments to specify different base images. The main image is automatically published both as `-bluefin` and without any suffix for convenience.
 
 \
 \
@@ -86,10 +92,21 @@ gh secret set SIGNING_SECRET < cosign.key
 ```
 </details>
 
-### Step 2b: Choosing Your Base Image
+### Step 2b: Understanding the Multi-Variant Build System
 
-To choose a base image, simply modify the line in the container file starting with `FROM`. This will be the image your image derives from, and is your starting point for modifications.
-For a base image, you can choose any of the Universal Blue images or start from a Fedora Atomic system. Below this paragraph is a dropdown with a non-exhaustive list of potential base images.
+This template uses a single Containerfile with build arguments to create three image variants automatically:
+
+1. **Bluefin variant** (with NVIDIA): Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx-nvidia:stable`
+2. **Bluefin Laptop variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:stable`
+3. **Bazzite variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bazzite:latest`
+
+All variants will be built simultaneously and published as separate images:
+- `ghcr.io/<username>/<repo-name>` (main image - same as bluefin variant)
+- `ghcr.io/<username>/<repo-name>-bluefin` (NVIDIA workstation variant)
+- `ghcr.io/<username>/<repo-name>-bluefin-laptop`
+- `ghcr.io/<username>/<repo-name>-bazzite`
+
+To modify the base images or add additional variants, edit the matrix configuration in `.github/workflows/build.yml`. The Containerfile uses the `BASE_IMAGE` build argument to determine which base image to use. You can also choose any of the Universal Blue images or start from a Fedora Atomic system. Below this paragraph is a dropdown with a non-exhaustive list of potential base images.
 
 <details>
     <summary>Base Images</summary>
@@ -111,7 +128,7 @@ This will show you all the info you need to know about your current image. The i
 
 ### Step 2c: Changing Names
 
-Change the first line in the [Justfile](./Justfile) to your image's name.
+Change the first line in the [Justfile](./Justfile) to your image's name. Note that with the multi-variant build system, four images will be created: the main image (no suffix), and variants with suffixes `-bluefin`, `-bluefin-laptop`, and `-bazzite`. The main image and `-bluefin` image are identical.
 
 To commit and push all the files changed and added in step 2 into your Github repository:
 ```bash
@@ -119,21 +136,45 @@ git add Containerfile Justfile cosign.pub
 git commit -m "Initial Setup"
 git push
 ```
-Once pushed, go look at the Actions tab on your Github repository's page.  The green checkmark should be showing on the top commit, which means your new image is ready!
+Once pushed, go look at the Actions tab on your Github repository's page. The green checkmark should be showing on the top commit, which means your new images are ready! You'll see three build jobs running - one for each variant.
 
 ## Step 3: Switch to Your Image
 
-From your bootc system, run the following command substituting in your Github username and image name where noted.
+From your bootc system, run one of the following commands substituting in your Github username and image name where noted.
+
+For the Main image (with NVIDIA support - recommended):
 ```bash
 sudo bootc switch ghcr.io/<username>/<image_name>
 ```
-This should queue your image for the next reboot, which you can do immediately after the command finishes. You have officially set up your custom image! See the following section for an explanation of the important parts of the template for customization.
+
+For the Bluefin variant (same as main, with NVIDIA support):
+```bash
+sudo bootc switch ghcr.io/<username>/<image_name>-bluefin
+```
+
+For the Bluefin Laptop variant (no dedicated GPU):
+```bash
+sudo bootc switch ghcr.io/<username>/<image_name>-bluefin-laptop
+```
+
+For the Bazzite variant (gaming-focused):
+```bash
+sudo bootc switch ghcr.io/<username>/<image_name>-bazzite
+```
+
+This should queue your chosen image variant for the next reboot, which you can do immediately after the command finishes. You have officially set up your custom image! See the following section for an explanation of the important parts of the template for customization.
 
 # Repository Contents
 
 ## Containerfile
 
-The [Containerfile](./Containerfile) defines the operations used to customize the selected image.This file is the entrypoint for your image build, and works exactly like a regular podman Containerfile. For reference, please see the [Podman Documentation](https://docs.podman.io/en/latest/Introduction.html).
+The [Containerfile](./Containerfile) defines the operations used to customize the selected base image. This single file supports multiple variants through the `BASE_IMAGE` build argument:
+
+- **Default**: `ghcr.io/ublue-os/bluefin-dx:stable` (Bluefin Laptop variant)
+- **Bluefin**: `ghcr.io/ublue-os/bluefin-dx-nvidia:stable` (with NVIDIA support)
+- **Bazzite**: `ghcr.io/ublue-os/bazzite:latest` (gaming-optimized)
+
+The file works exactly like a regular podman Containerfile. For reference, please see the [Podman Documentation](https://docs.podman.io/en/latest/Introduction.html).
 
 ## build.sh
 
@@ -141,7 +182,7 @@ The [build.sh](./build_files/build.sh) file is called from your Containerfile. I
 
 ## build.yml
 
-The [build.yml](./.github/workflows/build.yml) Github Actions workflow creates your custom OCI image and publishes it to the Github Container Registry (GHCR). By default, the image name will match the Github repository name. There are several environment variables at the start of the workflow which may be of interest to change.
+The [build.yml](./.github/workflows/build.yml) Github Actions workflow creates your custom OCI images and publishes them to the Github Container Registry (GHCR). The workflow uses a matrix strategy to build all variants simultaneously and automatically tags the bluefin variant as the main image (without suffix) for convenience. There are several configuration options in the matrix definition which may be of interest to customize.
 
 # Building Disk Images
 
@@ -153,8 +194,8 @@ This template provides a way to upload the disk images that is generated from th
 
 The [build-disk.yml](./.github/workflows/build-disk.yml) Github Actions workflow creates a disk image from your OCI image by utilizing the [bootc-image-builder](https://osbuild.org/docs/bootc/). In order to use this workflow you must complete the following steps:
 
-1. Modify `disk_config/iso.toml` to point to your custom container image before generating an ISO image.
-2. If you changed your image name from the default in `build.yml` then in the `build-disk.yml` file edit the `IMAGE_REGISTRY`, `IMAGE_NAME` and `DEFAULT_TAG` environment variables with the correct values. If you did not make changes, skip this step.
+1. Modify `disk_config/iso.toml` to point to your custom container image before generating an ISO image. Choose the appropriate variant (main image, `-bluefin`, `-bluefin-laptop`, or `-bazzite`) depending on your needs.
+2. If you changed your image name from the default in `build.yml` then in the `build-disk.yml` file edit the `IMAGE_REGISTRY`, `IMAGE_NAME` and `DEFAULT_TAG` environment variables with the correct values. Remember to include the variant suffix (or no suffix for main image) in the `IMAGE_NAME`. If you did not make changes, skip this step.
 3. Finally, if you want to upload your disk images to S3 then you will need to add your S3 configuration to the repository's Action secrets. This can be found by going to your repository settings, under `Secrets and Variables` -> `Actions`. You will need to add the following
   - `S3_PROVIDER` - Must match one of the values from the [supported list](https://rclone.org/s3/)
   - `S3_BUCKET_NAME` - Your unique bucket name
@@ -179,6 +220,44 @@ This template comes with the necessary tooling to index your image on [artifacth
 
 The `Justfile` contains various commands and configurations for building and managing container images and virtual machine images using Podman and other utilities.
 To use it, you must have installed [just](https://just.systems/man/en/introduction.html) from your package manager or manually. It is available by default on all Universal Blue images.
+
+## Local Building Examples
+
+### Building Specific Variants
+
+Build the Bluefin variant (NVIDIA):
+```bash
+just build my-image-bluefin latest "ghcr.io/ublue-os/bluefin-dx-nvidia:stable" "bluefin"
+```
+
+Build the Bluefin Laptop variant:
+```bash
+just build my-image-bluefin-laptop latest "ghcr.io/ublue-os/bluefin-dx:stable" "bluefin-laptop"
+```
+
+Build the Bazzite variant:
+```bash
+just build my-image-bazzite latest "ghcr.io/ublue-os/bazzite:latest" "bazzite"
+```
+
+Build the main image (same as bluefin, also tagged without suffix):
+```bash
+just build-main latest
+```
+
+### Building All Variants
+
+Build all three variants at once:
+```bash
+just build-all latest
+```
+
+### Building with Custom Base Images
+
+You can also build with any other Universal Blue base image:
+```bash
+just build my-custom-aurora latest "ghcr.io/ublue-os/aurora:latest" "aurora"
+```
 
 ## Environment Variables
 
