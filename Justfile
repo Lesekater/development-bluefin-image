@@ -8,15 +8,15 @@ alias run-vm := run-vm-qcow2
 
 # Build all variants (bluefin-laptop, bluefin, and bazzite)
 build-all tag=default_tag:
-    just build "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:stable"
-    just build "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:stable"
-    just build "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite:latest"
+    just build "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:stable" "bluefin-laptop"
+    just build "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:stable" "bluefin"
+    just build "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite:latest" "bazzite"
 
 # Build all variants with SELinux-compatible settings
 build-all-local tag=default_tag:
-    just build-local "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:stable"
-    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:stable"
-    just build-local "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite:latest"
+    just build-local "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:stable" "bluefin-laptop"
+    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:stable" "bluefin"
+    just build-local "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite:latest" "bazzite"
 
 [private]
 default:
@@ -98,7 +98,7 @@ sudoif command *args:
 #
 
 # Build the image using the specified parameters
-build $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:stable":
+build $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:stable" $variant_type="bluefin-laptop":
     #!/usr/bin/env bash
 
     BUILD_ARGS=()
@@ -106,6 +106,7 @@ build $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bl
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
     fi
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE={{ base_image }}")
+    BUILD_ARGS+=("--build-arg" "VARIANT_TYPE={{ variant_type }}")
 
     podman build \
         "${BUILD_ARGS[@]}" \
@@ -115,7 +116,7 @@ build $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bl
         .
 
 # Build with SELinux-compatible settings for local development
-build-local $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:stable":
+build-local $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:stable" $variant_type="bluefin-laptop":
     #!/usr/bin/env bash
 
     BUILD_ARGS=()
@@ -123,6 +124,7 @@ build-local $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
     fi
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE={{ base_image }}")
+    BUILD_ARGS+=("--build-arg" "VARIANT_TYPE={{ variant_type }}")
 
     echo "Building with SELinux-compatible settings..."
     podman build \
