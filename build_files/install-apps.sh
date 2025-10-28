@@ -33,8 +33,7 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-ffmpeg \
     vlc-plugin-kde \
     vlc-plugin-pause-click \
-    vlc \
-    spotify-client"
+    vlc"
 )
 
 # Add development packages only for Bluefin variants
