@@ -20,11 +20,7 @@ declare -A RPM_PACKAGES=(
     fish \
     deja-dup \
     blender.x86_64 \
-    bottles.noarch \
     gimp.x86_64"
-
-  ["terra"]="\
-    starship"
 
   ["fedora-multimedia"]="\
     HandBrake-cli \
