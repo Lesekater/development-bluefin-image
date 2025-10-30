@@ -4,3 +4,6 @@ flathub:com.discordapp.Discord
 flathub:dev.zed.Zed
 flathub:org.gimp.GIMP
 flathub:com.spotify.Client
+flathub:org.pulseaudio.pavucontrol
+flathub:org.signal.Signal
+flathub:org.telegram.desktop
