@@ -1,0 +1,14 @@
+[Unit]
+Description=Synchronize Flatpak Applications
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/flatpak-sync.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+

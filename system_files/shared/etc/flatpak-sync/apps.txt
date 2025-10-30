@@ -1,0 +1,4 @@
+flathub:org.blender.Blender
+flathub:app.zen_browser.zen
+flathub:com.discordapp.Discord
+flathub:dev.zed.Zed

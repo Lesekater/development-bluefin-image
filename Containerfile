@@ -24,5 +24,11 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build.sh && \
     ostree container commit
 
+# Copy all shared system files into the image
+COPY system_files/shared/ /
+
+# Enable timer by default
+RUN systemctl enable flatpak-sync.timer
+
 # Verify final image
 RUN bootc container lint
