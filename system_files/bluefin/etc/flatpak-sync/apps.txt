@@ -1,0 +1,3 @@
+flathub:com.google.AndroidStudio
+# Bluefin-only Flatpaks can be added here. These are installed in addition to the
+# shared list at system_files/shared/etc/flatpak-sync/apps.txt

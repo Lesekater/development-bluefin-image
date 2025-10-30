@@ -1,0 +1,2 @@
+# Bluefin-only Flatpaks (installed in addition to the shared apps.txt)
+flathub:com.google.AndroidStudio
