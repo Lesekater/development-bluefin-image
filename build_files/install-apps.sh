@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-set -euo pipefail
 
 trap '[[ $BASH_COMMAND != echo* ]] && [[ $BASH_COMMAND != log* ]] && echo "+ $BASH_COMMAND"' DEBUG
 
@@ -19,7 +17,6 @@ declare -A RPM_PACKAGES=(
     thefuck \
     fish \
     deja-dup \
-    blender.x86_64 \
     gimp.x86_64"
 
   ["fedora-multimedia"]="\
