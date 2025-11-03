@@ -27,11 +27,11 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-pause-click \
     vlc"
 
-  ["washkinazy/wayland-wm-extras"]="\
+  ["copr:washkinazy/wayland-wm-extras"]="\
     elephant \
     walker"
 
-  ["solopasha/hyprland"]="\
+  ["copr:solopasha/hyprland"]="\
     hypridle\ 
     hyprland\ 
     hyprlock\ 
