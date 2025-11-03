@@ -26,6 +26,17 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-kde \
     vlc-plugin-pause-click \
     vlc"
+
+  ["washkinazy/wayland-wm-extras"]="\
+    elephant \
+    walker"
+
+  ["solopasha/hyprland"]="\
+    hypridle\ 
+    hyprland\ 
+    hyprlock\ 
+    waybar\ 
+    waypaper"
 )
 
 # Add development packages only for Bluefin variants
