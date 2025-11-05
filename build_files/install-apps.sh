@@ -32,10 +32,10 @@ declare -A RPM_PACKAGES=(
     walker"
 
   ["copr:solopasha/hyprland"]="\
-    hypridle\ 
-    hyprland\ 
-    hyprlock\ 
-    waybar\ 
+    hypridle \ 
+    hyprland \ 
+    hyprlock \ 
+    waybar \ 
     waypaper"
 )
 
