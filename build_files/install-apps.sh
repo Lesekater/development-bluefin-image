@@ -16,7 +16,8 @@ declare -A RPM_PACKAGES=(
     nmap \
     thefuck \
     fish \
-    deja-dup"
+    deja-dup \
+    xdg-desktop-portal-hyprland"
 
   ["fedora-multimedia"]="\
     HandBrake-cli \
