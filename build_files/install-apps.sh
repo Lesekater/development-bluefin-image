@@ -60,4 +60,7 @@ for repo in "${!RPM_PACKAGES[@]}"; do
   fi
 done
 
+log "Cleaning up package manager cache"
+dnf5 clean all
+
 log "Build process completed"
