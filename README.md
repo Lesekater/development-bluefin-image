@@ -8,10 +8,6 @@ Opinionated custom bootc image for development and daily use, with inspirations 
 
 All variants are built from the same Containerfile using build arguments to specify different base images. The main image is automatically published both as `-bluefin` and without any suffix for convenience.
 
-\
-\
-\
-
 ------------------------------------
 # image-template
 
