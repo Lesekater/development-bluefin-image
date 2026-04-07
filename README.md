@@ -93,7 +93,7 @@ gh secret set SIGNING_SECRET < cosign.key
 This template uses a single Containerfile with build arguments to create three image variants automatically:
 
 1. **Bluefin variant** (with NVIDIA): Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx-nvidia:stable`
-2. **Bluefin Laptop variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:stable`
+2. **Bluefin Laptop variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:latest`
 3. **Bazzite variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bazzite-nvidia:latest`
 
 All variants will be built simultaneously and published as separate images:
@@ -167,7 +167,7 @@ This should queue your chosen image variant for the next reboot, which you can d
 
 The [Containerfile](./Containerfile) defines the operations used to customize the selected base image. This single file supports multiple variants through the `BASE_IMAGE` build argument:
 
-- **Default**: `ghcr.io/ublue-os/bluefin-dx:stable` (Bluefin Laptop variant)
+- **Default**: `ghcr.io/ublue-os/bluefin-dx:latest` (Bluefin Laptop variant)
 - **Bluefin**: `ghcr.io/ublue-os/bluefin-dx-nvidia:stable` (with NVIDIA support)
 - **Bazzite**: `ghcr.io/ublue-os/bazzite-nvidia:latest` (gaming-optimized with NVIDIA)
 
@@ -229,7 +229,7 @@ just build my-image-bluefin latest "ghcr.io/ublue-os/bluefin-dx-nvidia:stable" "
 
 Build the Bluefin Laptop variant:
 ```bash
-just build my-image-bluefin-laptop latest "ghcr.io/ublue-os/bluefin-dx:stable" "bluefin-laptop"
+just build my-image-bluefin-laptop latest "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
 ```
 
 Build the Bazzite variant:

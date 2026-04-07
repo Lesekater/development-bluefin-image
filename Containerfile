@@ -1,5 +1,5 @@
 # Build arguments for base image selection
-ARG BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:stable
+ARG BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:latest
 ARG VARIANT_TYPE=bluefin
 
 # Allow build scripts to be referenced without being copied into the final image

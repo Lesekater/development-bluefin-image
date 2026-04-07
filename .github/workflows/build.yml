@@ -30,10 +30,10 @@ jobs:
       matrix:
         variant:
           - name: "bluefin"
-            base_image: "ghcr.io/ublue-os/bluefin-dx-nvidia:stable"
+            base_image: "ghcr.io/ublue-os/bluefin-dx-nvidia:latest"
             image_desc: "Developer-focused Universal Blue image with NVIDIA support"
           - name: "bluefin-laptop"
-            base_image: "ghcr.io/ublue-os/bluefin-dx:stable"
+            base_image: "ghcr.io/ublue-os/bluefin-dx:latest"
             image_desc: "Developer-focused Universal Blue image for laptops"
           - name: "bazzite"
             base_image: "ghcr.io/ublue-os/bazzite-nvidia:latest"

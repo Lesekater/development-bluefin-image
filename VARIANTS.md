@@ -8,7 +8,7 @@ This repository builds three variants of the custom Universal Blue image, each o
 |---------|------------|-------------|-----------------|--------------|
 | **Main Image** (default) | `bluefin-dx-nvidia:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>` |
 | **Bluefin** | `bluefin-dx-nvidia:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>-bluefin` |
-| **Bluefin Laptop** | `bluefin-dx:stable` | Integrated Graphics | Laptops, battery life | `<repo>-bluefin-laptop` |
+| **Bluefin Laptop** | `bluefin-dx:latest` | Integrated Graphics | Laptops, battery life | `<repo>-bluefin-laptop` |
 | **Bazzite** | `bazzite-nvidia:latest` | NVIDIA GPUs | Gaming, entertainment | `<repo>-bazzite` |
 
 > **Note:** The Main Image and Bluefin variant are identical - the Main Image is automatically published without suffix for convenience.
@@ -37,7 +37,7 @@ This variant is built and published separately but contains the exact same conte
 
 ## Bluefin Laptop Variant
 
-**Base Image:** `ghcr.io/ublue-os/bluefin-dx:stable`  
+**Base Image:** `ghcr.io/ublue-os/bluefin-dx:latest`  
 **Target Audience:** Laptop users and developers without dedicated GPUs  
 **Published as:** `ghcr.io/<username>/<repo-name>-bluefin-laptop`
 
