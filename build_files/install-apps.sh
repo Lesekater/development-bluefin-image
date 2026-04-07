@@ -1,4 +1,3 @@
-
 trap '[[ $BASH_COMMAND != echo* ]] && [[ $BASH_COMMAND != log* ]] && echo "+ $BASH_COMMAND"' DEBUG
 
 log() {
@@ -28,7 +27,7 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-pause-click \
     vlc"
 
-  ["copr:solopasha/hyprland"]="hypridle hyprland hyprlock waybar waypaper"
+  ["copr:lionheartp/hyprland"]="hypridle hyprland hyprlock waybar waypaper"
 )
 
 # Add development packages only for Bluefin variants
