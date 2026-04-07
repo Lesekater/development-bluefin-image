@@ -27,7 +27,7 @@ declare -A RPM_PACKAGES=(
     vlc-plugin-pause-click \
     vlc"
 
-  ["copr:lionheartp/hyprland"]="hypridle hyprland hyprlock waybar waypaper"
+  ["copr:lionheartp/Hyprland"]="hypridle hyprland hyprlock waybar waypaper"
 )
 
 # Add development packages only for Bluefin variants
