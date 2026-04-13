@@ -8,19 +8,19 @@ alias run-vm := run-vm-qcow2
 
 # Build all variants (bluefin-laptop, bluefin, and bazzite)
 build-all tag=default_tag:
-    just build "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:latest" "bluefin"
+    just build "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
     just build "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
     just build "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
 
 # Build all variants with SELinux-compatible settings
 build-all-local tag=default_tag:
-    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:latest" "bluefin"
+    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
     just build-local "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
     just build-local "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
 
 # Build main image (bluefin with NVIDIA) and tag as main image without suffix
 build-main tag=default_tag:
-    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia:latest" "bluefin"
+    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
     podman tag "{{image_name}}-bluefin:{{tag}}" "{{image_name}}:{{tag}}"
 
 [private]

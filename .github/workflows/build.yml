@@ -30,7 +30,7 @@ jobs:
       matrix:
         variant:
           - name: "bluefin"
-            base_image: "ghcr.io/ublue-os/bluefin-dx-nvidia:latest"
+            base_image: "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest"
             image_desc: "Developer-focused Universal Blue image with NVIDIA support"
           - name: "bluefin-laptop"
             base_image: "ghcr.io/ublue-os/bluefin-dx:latest"

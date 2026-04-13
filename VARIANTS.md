@@ -6,8 +6,8 @@ This repository builds three variants of the custom Universal Blue image, each o
 
 | Variant | Base Image | GPU Support | Target Use Case | Published As |
 |---------|------------|-------------|-----------------|--------------|
-| **Main Image** (default) | `bluefin-dx-nvidia:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>` |
-| **Bluefin** | `bluefin-dx-nvidia:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>-bluefin` |
+| **Main Image** (default) | `bluefin-dx-nvidia-open:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>` |
+| **Bluefin** | `bluefin-dx-nvidia-open:stable` | NVIDIA GPUs | Workstations, ML/AI | `<repo>-bluefin` |
 | **Bluefin Laptop** | `bluefin-dx:latest` | Integrated Graphics | Laptops, battery life | `<repo>-bluefin-laptop` |
 | **Bazzite** | `bazzite-nvidia:latest` | NVIDIA GPUs | Gaming, entertainment | `<repo>-bazzite` |
 
@@ -15,7 +15,7 @@ This repository builds three variants of the custom Universal Blue image, each o
 
 ## Main Image (Default)
 
-**Base Image:** `ghcr.io/ublue-os/bluefin-dx-nvidia:stable`  
+**Base Image:** `ghcr.io/ublue-os/bluefin-dx-nvidia-open:stable`  
 **Target Audience:** Developers and content creators with NVIDIA GPUs  
 **Published as:** `ghcr.io/<username>/<repo-name>` (same as Bluefin variant)
 
@@ -28,7 +28,7 @@ This repository builds three variants of the custom Universal Blue image, each o
 
 ## Bluefin Variant
 
-**Base Image:** `ghcr.io/ublue-os/bluefin-dx-nvidia:stable`  
+**Base Image:** `ghcr.io/ublue-os/bluefin-dx-nvidia-open:stable`  
 **Target Audience:** Developers and content creators with NVIDIA GPUs  
 **Published as:** `ghcr.io/<username>/<repo-name>-bluefin` (identical to Main Image)
 

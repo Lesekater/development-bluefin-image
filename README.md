@@ -92,7 +92,7 @@ gh secret set SIGNING_SECRET < cosign.key
 
 This template uses a single Containerfile with build arguments to create three image variants automatically:
 
-1. **Bluefin variant** (with NVIDIA): Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx-nvidia:stable`
+1. **Bluefin variant** (with NVIDIA): Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx-nvidia-open:stable`
 2. **Bluefin Laptop variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bluefin-dx:latest`
 3. **Bazzite variant**: Built with `BASE_IMAGE=ghcr.io/ublue-os/bazzite-nvidia:latest`
 
@@ -168,7 +168,7 @@ This should queue your chosen image variant for the next reboot, which you can d
 The [Containerfile](./Containerfile) defines the operations used to customize the selected base image. This single file supports multiple variants through the `BASE_IMAGE` build argument:
 
 - **Default**: `ghcr.io/ublue-os/bluefin-dx:latest` (Bluefin Laptop variant)
-- **Bluefin**: `ghcr.io/ublue-os/bluefin-dx-nvidia:stable` (with NVIDIA support)
+- **Bluefin**: `ghcr.io/ublue-os/bluefin-dx-nvidia-open:stable` (with NVIDIA support)
 - **Bazzite**: `ghcr.io/ublue-os/bazzite-nvidia:latest` (gaming-optimized with NVIDIA)
 
 The file works exactly like a regular podman Containerfile. For reference, please see the [Podman Documentation](https://docs.podman.io/en/latest/Introduction.html).
@@ -224,7 +224,7 @@ To use it, you must have installed [just](https://just.systems/man/en/introducti
 
 Build the Bluefin variant (NVIDIA):
 ```bash
-just build my-image-bluefin latest "ghcr.io/ublue-os/bluefin-dx-nvidia:stable" "bluefin"
+just build my-image-bluefin latest "ghcr.io/ublue-os/bluefin-dx-nvidia-open:stable" "bluefin"
 ```
 
 Build the Bluefin Laptop variant:
