@@ -36,5 +36,13 @@ RUN if [ -d /tmp/system_files/${VARIANT_TYPE} ]; then cp -a /tmp/system_files/${
 # Enable timer by default
 RUN systemctl enable flatpak-sync.timer
 
+# Enable Homebrew update services
+RUN --mount=type=cache,dst=/var/cache \
+  --mount=type=cache,dst=/var/log \
+  --mount=type=tmpfs,dst=/tmp \
+  /usr/bin/systemctl preset brew-setup.service && \
+  /usr/bin/systemctl preset brew-update.timer && \
+  /usr/bin/systemctl preset brew-upgrade.timer
+
 # Verify final image
 RUN bootc container lint
