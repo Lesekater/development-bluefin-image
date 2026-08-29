@@ -1,0 +1,14 @@
+[Unit]
+Description=Synchronize Homebrew Applications
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=fish -c "brew bundle install --file=$HOME/.config/Brewfile"
+User=elias
+Group=elias
+
+[Install]
+WantedBy=multi-user.target
+

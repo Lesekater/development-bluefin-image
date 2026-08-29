@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Brew Sync Timer
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1d
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+
