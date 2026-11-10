@@ -4,13 +4,18 @@ on:
   pull_request:
     branches:
       - main
+    paths: &build-paths
+      - 'Containerfile'
+      - 'Justfile'
+      - 'build_files/**'
+      - 'system_files/**'
+      - '.github/workflows/build.yml'
   schedule:
     - cron: '05 10 * * *'  # 10:05am UTC everyday
   push:
     branches:
       - main
-    paths-ignore:
-      - '**/README.md'
+    paths: *build-paths
   workflow_dispatch:
 
 env:
