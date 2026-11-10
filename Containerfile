@@ -14,7 +14,7 @@ ARG VARIANT_TYPE
 ENV VARIANT_TYPE=${VARIANT_TYPE}
 
 # Supports multiple variants via BASE_IMAGE build argument
-# See VARIANTS.md for available options
+# See README.md for available options
 
 # Remove unused packages from bluefin
 RUN dnf5 -y remove rocm-hip hipcc rocm-device-libs rocm-llvm-static rocm-comgr rocm-clang-libs rocm-llvm-libs 2>/dev/null || true
