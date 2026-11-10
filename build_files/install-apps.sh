@@ -54,19 +54,16 @@ for repo in "${!RPM_PACKAGES[@]}"; do
     # Handle COPR packages
     copr_repo=${repo#copr:}
     dnf5 -y copr enable "$copr_repo"
-    dnf5 -y install "${pkg_array[@]}"
+    dnf5 -y install --setopt=keepcache=True "${pkg_array[@]}"
     dnf5 -y copr disable "$copr_repo"
   else
     # Handle regular packages
     [[ $repo != "fedora" ]] && enable_opt="--enable-repo=$repo" || enable_opt=""
-    cmd=(dnf5 -y install)
+    cmd=(dnf5 -y install --setopt=keepcache=True)
     [[ -n "$enable_opt" ]] && cmd+=("$enable_opt")
     cmd+=("${pkg_array[@]}")
     "${cmd[@]}"
   fi
 done
-
-log "Cleaning up package manager cache"
-dnf5 clean all
 
 log "Build process completed"

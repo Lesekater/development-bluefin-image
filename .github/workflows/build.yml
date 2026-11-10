@@ -24,6 +24,7 @@ jobs:
   build_push:
     name: Build and push image (${{ matrix.variant.name }})
     runs-on: ubuntu-26.04
+    timeout-minutes: 60
 
     strategy:
       fail-fast: false
@@ -91,6 +92,21 @@ jobs:
           echo "IMAGE_NAME=${IMAGE_NAME,,}" >> ${GITHUB_ENV}
           echo "MAIN_IMAGE_NAME=${REPO_NAME,,}" >> ${GITHUB_ENV}
 
+      # dnf caches packages in podman's cache mounts (/var/tmp/buildah-cache-$UID).
+      # Restore the newest cache for this variant; a new one is saved once per week.
+      - name: DNF Package Cache Setup
+        id: setup-cache
+        run: |
+          echo "key=buildah-dnf-${{ matrix.variant.name }}-$(date -u +%G-%V)" >> $GITHUB_OUTPUT
+
+      - name: Restore DNF package cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /var/tmp/buildah-cache-*
+          key: ${{ steps.setup-cache.outputs.key }}
+          restore-keys: |
+            buildah-dnf-${{ matrix.variant.name }}-
+
       # This actually builds the container image
       - name: Build Image
         id: build-image
@@ -100,6 +116,19 @@ jobs:
             "${DEFAULT_TAG}" \
             "${{ matrix.variant.base_image }}" \
             "${{ matrix.variant.name }}"
+
+      # https://github.com/actions/cache/issues/1533
+      - name: Fix DNF package cache permissions
+        run: |
+          sudo chmod -R a+rwX /var/tmp/buildah-cache-* || true
+
+      # PR caches can't be used by main, so only write from main
+      - name: Write new DNF package cache
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: /var/tmp/buildah-cache-*
+          key: ${{ steps.setup-cache.outputs.key }}
 
       # This is optional, this provides smaller delta updates
       # Uses the new distro agnostic rechunker https://github.com/coreos/chunkah
@@ -152,28 +181,44 @@ jobs:
       - name: Push To GHCR
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         env:
           ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
-        run: |
-          set -euox pipefail
-          for tag in ${ALIAS_TAGS}; do
-            podman push --digestfile=/tmp/digestfile ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${IMAGE_NAME}:${tag}
-          done
+        with:
+          max_attempts: 3
+          retry_wait_seconds: 15
+          timeout_minutes: 20
+          shell: bash
+          command: |
+            set -euox pipefail
+            for tag in ${ALIAS_TAGS}; do
+              podman push --digestfile=/tmp/digestfile ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${IMAGE_NAME}:${tag}
+              # Push twice to work around https://github.com/containers/podman/issues/27796
+              # otherwise the digest can change and only the last tag would match the signature
+              podman push --digestfile=/tmp/digestfile ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${IMAGE_NAME}:${tag}
+            done
 
-          digest=$(< /tmp/digestfile)
+            digest=$(< /tmp/digestfile)
 
-          echo "digest=${digest}" >> $GITHUB_OUTPUT
+            echo "digest=${digest}" >> $GITHUB_OUTPUT
 
       # The bluefin variant is additionally published as the main image (without variant suffix)
       - name: Push Main Image To GHCR
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && matrix.variant.name == 'bluefin'
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         env:
           ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
-        run: |
-          set -euox pipefail
-          for tag in ${ALIAS_TAGS}; do
-            podman push ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${MAIN_IMAGE_NAME}:${tag}
-          done
+        with:
+          max_attempts: 3
+          retry_wait_seconds: 15
+          timeout_minutes: 20
+          shell: bash
+          command: |
+            set -euox pipefail
+            for tag in ${ALIAS_TAGS}; do
+              podman push ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${MAIN_IMAGE_NAME}:${tag}
+              podman push ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${MAIN_IMAGE_NAME}:${tag}
+            done
 
       # This section is optional and only needs to be enabled if you plan on distributing
       # your project for others to consume. You will need to create a public and private key
