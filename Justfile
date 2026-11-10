@@ -174,7 +174,7 @@ rechunk $target_image=image_name $tag=default_tag:
 
     set -xeuo pipefail
 
-    # TODO: pin chunkah image to hash once mature enough
+    # chunkah image is pinned to a digest, Renovate keeps it up to date (see .github/renovate.json5)
     # You may run into space issues on github runners as we are making a
     # complete copy of the image, which likely has no shared layers, unless your
     # base image is also using chunkah
@@ -191,7 +191,7 @@ rechunk $target_image=image_name $tag=default_tag:
       --mount=type=image,src="${target_image}:${tag}",target=/chunkah \
       -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
       -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
-      quay.io/coreos/chunkah:latest \
+      quay.io/coreos/chunkah:latest@sha256:8b56578258d1d10d3e1c7b0f71a4d05317c5fde331c4f483576a1b60e65f0cea \
       build \
       --verbose \
       --compressed \
