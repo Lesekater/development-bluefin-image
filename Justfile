@@ -174,7 +174,6 @@ rechunk $target_image=image_name $tag=default_tag:
 
     set -xeuo pipefail
 
-    # chunkah image is pinned to a digest, Renovate keeps it up to date (see .github/renovate.json5)
     # You may run into space issues on github runners as we are making a
     # complete copy of the image, which likely has no shared layers, unless your
     # base image is also using chunkah
