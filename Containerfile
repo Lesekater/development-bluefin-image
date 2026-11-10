@@ -8,6 +8,7 @@ COPY build_files /
 
 # Base Image - Configurable via build args
 FROM $BASE_IMAGE
+ARG VARIANT_TYPE
 
 # Make build arguments available as environment variables
 ENV VARIANT_TYPE=${VARIANT_TYPE}
@@ -32,7 +33,7 @@ COPY system_files/shared/ /
 # Copy variant-specific system files into the image (optional)
 # Fallback: copy whole system_files tree and only apply the variant if the folder exists
 COPY system_files/ /tmp/system_files/
-RUN if [ -d /tmp/system_files/${VARIANT_TYPE} ]; then cp -a /tmp/system_files/${VARIANT_TYPE}/ /; fi && \
+RUN if [ -d /tmp/system_files/${VARIANT_TYPE} ]; then cp -a /tmp/system_files/${VARIANT_TYPE}/. /; fi && \
   rm -rf /tmp/system_files
 
 # Enable timer by default
