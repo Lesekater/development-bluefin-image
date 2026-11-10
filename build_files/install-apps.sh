@@ -19,15 +19,6 @@ declare -A RPM_PACKAGES=(
     xdg-desktop-portal-hyprland \
     wofi"
 
-  ["fedora-multimedia"]="\
-    HandBrake-cli \
-    HandBrake-gui \
-    vlc-plugin-bittorrent \
-    vlc-plugin-ffmpeg \
-    vlc-plugin-kde \
-    vlc-plugin-pause-click \
-    vlc"
-
   ["copr:lionheartp/Hyprland"]="\
     hypridle \
     hyprland \

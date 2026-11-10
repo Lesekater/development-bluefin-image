@@ -7,3 +7,5 @@ flathub:com.spotify.Client
 flathub:org.pulseaudio.pavucontrol
 flathub:org.signal.Signal
 flathub:org.telegram.desktop
+flathub:org.videolan.VLC
+flathub:fr.handbrake.ghb
