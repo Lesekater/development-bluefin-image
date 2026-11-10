@@ -1,6 +1,11 @@
 export image_name := env("IMAGE_NAME", "development-bluefin-image") # output image name, usually same as repo name, change as needed
 export default_tag := env("DEFAULT_TAG", "latest")
 export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest")
+export repo_name := env("REPO_NAME", "development-bluefin-image")
+export repo_organization := env("REPO_ORGANIZATION", "lesekater")
+export image_desc := env("IMAGE_DESC", "My Customized Universal Blue Image")
+export image_keywords := env("IMAGE_KEYWORDS", "bootc,ublue,universal-blue")
+export image_logo_url := env("IMAGE_LOGO_URL", "https://avatars.githubusercontent.com/u/120078124?s=200&v=4")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
@@ -8,20 +13,20 @@ alias run-vm := run-vm-qcow2
 
 # Build all variants (bluefin-laptop, bluefin, and bazzite)
 build-all tag=default_tag:
-    just build "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
-    just build "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
-    just build "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
+    just build "{{ image_name }}-bluefin" "{{ tag }}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
+    just build "{{ image_name }}-bluefin-laptop" "{{ tag }}" "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
+    just build "{{ image_name }}-bazzite" "{{ tag }}" "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
 
 # Build all variants with SELinux-compatible settings
 build-all-local tag=default_tag:
-    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
-    just build-local "{{image_name}}-bluefin-laptop" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
-    just build-local "{{image_name}}-bazzite" "{{tag}}" "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
+    just build-local "{{ image_name }}-bluefin" "{{ tag }}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
+    just build-local "{{ image_name }}-bluefin-laptop" "{{ tag }}" "ghcr.io/ublue-os/bluefin-dx:latest" "bluefin-laptop"
+    just build-local "{{ image_name }}-bazzite" "{{ tag }}" "ghcr.io/ublue-os/bazzite-nvidia:latest" "bazzite"
 
 # Build main image (bluefin with NVIDIA) and tag as main image without suffix
 build-main tag=default_tag:
-    just build-local "{{image_name}}-bluefin" "{{tag}}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
-    podman tag "{{image_name}}-bluefin:{{tag}}" "{{image_name}}:{{tag}}"
+    just build-local "{{ image_name }}-bluefin" "{{ tag }}" "ghcr.io/ublue-os/bluefin-dx-nvidia-open:latest" "bluefin"
+    podman tag "{{ image_name }}-bluefin:{{ tag }}" "{{ image_name }}:{{ tag }}"
 
 [private]
 default:
@@ -106,18 +111,41 @@ sudoif command *args:
 build $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue-os/bluefin-dx:latest" $variant_type="bluefin-laptop":
     #!/usr/bin/env bash
 
+    set -euox pipefail
+
     BUILD_ARGS=()
+    LABELS=()
     if [[ -z "$(git status -s)" ]]; then
-        BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
+        GIT_SHA=$(git rev-parse --short HEAD)
+        BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=${GIT_SHA}")
+        LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ repo_name }}/${GIT_SHA}/README.md")
+        LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/{{ repo_organization }}/{{ repo_name }}/${GIT_SHA}/README.md")
+        LABELS+=("--label" "org.opencontainers.image.source=https://github.com/{{ repo_organization }}/{{ repo_name }}/blob/${GIT_SHA}/Containerfile")
+        LABELS+=("--label" "org.opencontainers.image.url=https://github.com/{{ repo_organization }}/{{ repo_name }}/tree/${GIT_SHA}")
+        LABELS+=("--label" "org.opencontainers.image.version=${tag}.$(date +%Y%m%d)-${GIT_SHA}")
     fi
     BUILD_ARGS+=("--build-arg" "BASE_IMAGE={{ base_image }}")
     BUILD_ARGS+=("--build-arg" "VARIANT_TYPE={{ variant_type }}")
 
+    # Image metadata for https://artifacthub.io/
+    LABELS+=("--label" "io.artifacthub.package.deprecated=false")
+    LABELS+=("--label" "io.artifacthub.package.keywords={{ image_keywords }}")
+    LABELS+=("--label" "io.artifacthub.package.license=Apache-2.0")
+    LABELS+=("--label" "io.artifacthub.package.logo-url={{ image_logo_url }}")
+    LABELS+=("--label" "io.artifacthub.package.prerelease=false")
+    LABELS+=("--label" "org.opencontainers.image.created=$(date -u +%Y\-%m\-%d\T%H\:%M\:%S\Z)")
+    LABELS+=("--label" "org.opencontainers.image.description={{ image_desc }}")
+    LABELS+=("--label" "org.opencontainers.image.title=${target_image}")
+    LABELS+=("--label" "org.opencontainers.image.vendor={{ repo_organization }}")
+    LABELS+=("--label" "containers.bootc=1")
+
     podman build \
         "${BUILD_ARGS[@]}" \
+        "${LABELS[@]}" \
         --pull=newer \
         --security-opt label=disable \
         --tag "${target_image}:${tag}" \
+        --file Containerfile \
         .
 
 # Build with SELinux-compatible settings for local development
@@ -139,6 +167,86 @@ build-local $target_image=image_name $tag=default_tag $base_image="ghcr.io/ublue
         --security-opt seccomp=unconfined \
         --tag "${target_image}:${tag}" \
         .
+
+# Split the image for smaller updates (Classical)!
+ostree-rechunk $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+
+    set -xeuo pipefail
+
+    # Use the already-built local image to avoid pulling from a remote registry
+    RPM_OSTREE_CHUNKER_IMAGE="localhost/${target_image}:${tag}"
+
+    GRAPHROOT="$(podman info --format '{{ '{{.Store.GraphRoot}}' }}')"
+
+    podman run --rm --pull=never --privileged \
+      --mount=type=image,src="${target_image}:${tag}",target=/rpm-ostree \
+      --mount=type=bind,src=${GRAPHROOT},target=/run/host-container-storage,rw \
+      --mount=type=tmpfs,target=/run/rpm-ostree-storage \
+      --entrypoint /usr/bin/rpm-ostree \
+      "${RPM_OSTREE_CHUNKER_IMAGE}" \
+      compose build-chunked-oci \
+      --max-layers 127 \
+      --format-version=2 \
+      --bootc \
+      --rootfs /rpm-ostree \
+      --output "containers-storage:[overlay@/run/host-container-storage+/run/rpm-ostree-storage]localhost/${target_image}:${tag}"
+
+# Generate Default Tag
+[group('Utility')]
+generate-default-tag $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    echo "${tag}"
+
+# Generate Tags
+[group('Utility')]
+generate-build-tags $target_image=image_name $tag=default_tag:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    DATE=$(date +%Y%m%d)
+    BUILD_TAGS=()
+    if [[ -z "$(git status -s)" ]]; then
+        GIT_SHA=$(git rev-parse --short HEAD)
+        BUILD_TAGS+=("${tag}-${GIT_SHA}")
+        BUILD_TAGS+=("${tag}-${DATE}-${GIT_SHA}")
+        BUILD_TAGS+=("${DATE}-${GIT_SHA}")
+    fi
+
+    BUILD_TAGS+=("${DATE}")
+    BUILD_TAGS+=("${tag}")
+    BUILD_TAGS+=("${tag}-${DATE}")
+
+    echo "${BUILD_TAGS[@]}"
+
+# Tag Images
+[group('Utility')]
+tag-images $target_image=image_name $tag=default_tag tags="":
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    # Get Image, and untag
+    IMAGE=$(podman inspect ${target_image}:${tag} | jq -r .[].Id)
+    podman untag ${IMAGE}
+
+    # Tag Image
+    for tag in {{ tags }}; do
+        podman tag $IMAGE "${target_image}:${tag}"
+    done
+
+    # Show Images
+    podman images
+
+# Image Name
+[group('Utility')]
+[private]
+image_name $target_image=image_name:
+    #!/usr/bin/env bash
+    set -eoux pipefail
+
+    echo "${image_name}"
 
 # Command: _rootful_load_image
 # Description: This script checks if the current user is root or running under sudo. If not, it attempts to resolve the image tag using podman inspect.
@@ -332,7 +440,6 @@ spawn-vm rebuild="0" type="qcow2" ram="6G":
       --network-user-mode \
       --vsock=false --pass-ssh-key=false \
       -i ./output/**/*.{{ type }}
-
 
 # Runs shell check on all Bash scripts
 lint:
