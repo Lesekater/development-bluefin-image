@@ -24,8 +24,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
   --mount=type=cache,dst=/var/log \
   --mount=type=tmpfs,dst=/tmp \
   /ctx/install-apps.sh && \
-  /ctx/build.sh && \
-  ostree container commit
+  /ctx/build.sh
 
 # Copy all shared system files into the image
 COPY system_files/shared/ /
